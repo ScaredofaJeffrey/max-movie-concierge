@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-US">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,11 +7,12 @@
     <title>MAX — Movie Concierge</title>
     <link rel="stylesheet" href="./assets/max.css">
   </head>
+
   <body>
     <div class="app">
       <header>
         <div class="logo">MAX</div>
-        <div class="tag">Your personal movie concierge.</div>
+        <p class="tag">Your personal movie concierge.</p>
       </header>
 
       <main class="screen">
@@ -21,61 +22,17 @@
         </section>
 
         <nav aria-label="MAX navigation">
-          <a class="link primary" href="./pick.html?v=090">🎲 MAX, PICK SOMETHING</a>
-          <a class="link" href="./voice.html?v=090">🎙️ Talk to MAX</a>
-          <a class="link" href="./search.html?v=090">🔎 Search the MAX universe</a>
+          <a class="link primary" href="./pick.html">🎲 MAX, PICK SOMETHING</a>
+          <a class="link" href="./voice.html">🎙️ Talk to MAX</a>
+          <a class="link" href="./search.html">🔎 Search the MAX universe</a>
           <div id="saved"></div>
-          <a class="link" href="./settings.html?v=090">⚙️ MAX Settings</a>
+          <a class="link" href="./settings.html">⚙️ MAX Settings</a>
         </nav>
 
         <p class="small">MAX v0.9 · voice concierge</p>
       </main>
     </div>
 
-    <script>
-      (() => {
-        "use strict";
-
-        const box = document.getElementById("saved");
-        let items = [];
-
-        try {
-          items = JSON.parse(localStorage.getItem("maxLater") || "[]").slice().reverse();
-        } catch (_) {
-          items = [];
-        }
-
-        if (!items.length) return;
-
-        const escapeHtml = (value) => String(value ?? "").replace(/[&<>\"']/g, (char) => ({
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          "\"": "&quot;",
-          "'": "&#39;"
-        }[char]));
-
-        box.innerHTML = `
-          <div class="savedBox">
-            <div class="savedTitle">
-              🕐 Maybe Later
-              <span class="savedReason">· ${items.length} saved</span>
-            </div>
-            ${items.slice(0, 3).map((item) => `
-              <a class="savedRow" href="./detail.html?id=${encodeURIComponent(item.id)}&type=${encodeURIComponent(item.type || "movie")}">
-                ${item.poster_path ? `<img src="https://image.tmdb.org/t/p/w92${item.poster_path}" alt="">` : ""}
-                <div>
-                  <div class="savedTitle">${escapeHtml(item.title || "Untitled")}</div>
-                  <div class="savedReason">${item.reason === "not-today" ? "🌙 Not today" : "🕐 Maybe another time"}</div>
-                </div>
-              </a>
-            `).join("")}
-            <a class="savedRow" href="./saved.html?v=090">
-              <div class="savedTitle">View all saved →</div>
-            </a>
-          </div>
-        `;
-      })();
-    </script>
+    <script src="./assets/max.js" defer></script>
   </body>
 </html>
