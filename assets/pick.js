@@ -100,9 +100,7 @@
     root.innerHTML = `
       <section aria-labelledby="question-title">
         <div class="top">
-          <a class="link" href="./index.html" style="width:auto;padding:8px 12px;font-size:13px">
-            ‹ Home
-          </a>
+          <a class="link back-link" href="./index.html">‹ Home</a>
           <span class="small">${step} / 5</span>
         </div>
 
@@ -189,7 +187,11 @@
     const later = readJson("maxLater", "[]");
     const notToday = new Set(
       later
-        .filter((item) => item.reason === "not-today" && Date.now() - item.added < 3 * 86400000)
+        .filter(
+          (item) =>
+            item.reason === "not-today" &&
+            Date.now() - item.added < 3 * 86400000
+        )
         .map((item) => Number(item.id))
     );
 
