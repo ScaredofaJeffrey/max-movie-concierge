@@ -3,13 +3,15 @@
 
   const API_BASE = "https://api.themoviedb.org/3";
   const STORAGE_KEY = "maxTmdbToken";
+  const form = document.getElementById("settings-form");
   const input = document.getElementById("token");
   const message = document.getElementById("msg");
-  const save = document.getElementById("save");
 
   input.value = localStorage.getItem(STORAGE_KEY) || "";
 
-  save.addEventListener("click", async () => {
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
     const token = input.value.trim();
 
     if (!token) {
