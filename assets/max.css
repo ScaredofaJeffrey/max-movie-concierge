@@ -73,6 +73,7 @@ input:focus-visible {
 .progress i { display: block; height: 100%; background: var(--accent); }
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .selected { background: var(--accent); color: var(--accent-text); }
+.back-link { width: auto; padding: 8px 12px; font-size: 13px; }
 .status,
 .card,
 .resultCard,
