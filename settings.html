@@ -1,1 +1,47 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07080b"><title>MAX Settings</title><style>body{margin:0;background:#07080b;color:#f7f7f8;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.app{max-width:430px;min-height:100vh;margin:auto;padding:20px 18px;background:#07080b}.logo{text-align:center;font-weight:900;letter-spacing:8px;font-size:22px}.tag,.small{color:#9da1aa;font-size:13px}.tag{text-align:center;font-size:12px}.link,button{display:block;width:100%;padding:16px;margin:6px 0;border-radius:16px;border:1px solid #2a2d35;background:#15171c;color:#fff;font-size:16px;font-weight:650;text-decoration:none;text-align:center;box-sizing:border-box}.primary{background:#f5f5f7;color:#08090b}.input{width:100%;padding:14px;border-radius:14px;border:1px solid #2a2d35;background:#101217;color:#fff;font-size:16px;box-sizing:border-box}.status{padding:14px;border:1px solid #2a2d35;border-radius:14px;background:#101217;margin:10px 0}</style></head><body><div class="app"><div class="logo">MAX</div><div class="tag">Your personal movie concierge.</div><a class="link" href="./index.html">‹ Home</a><h1>TMDB Settings</h1><p class="small">Your prototype token stays in this browser's local storage.</p><input class="input" id="token" type="password" placeholder="TMDB Read Access Token"><button class="primary" id="save">Save & Test TMDB</button><div id="msg" class="status"></div></div><script>const A='https://api.themoviedb.org/3',key='maxTmdbToken',input=document.getElementById('token'),msg=document.getElementById('msg');input.value=localStorage.getItem(key)||'';document.getElementById('save').onclick=async()=>{const v=input.value.trim();if(!v){msg.textContent='Paste your TMDB token first.';return}msg.textContent='Testing TMDB…';try{const r=await fetch(A+'/configuration',{headers:{Authorization:'Bearer '+v}});if(!r.ok)throw Error('TMDB returned '+r.status);localStorage.setItem(key,v);msg.textContent='TMDB connected.'}catch(e){msg.textContent=e.message}}</script></body></html>
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#07080b">
+    <title>MAX Settings</title>
+    <link rel="stylesheet" href="./assets/max.css">
+    <script src="./assets/settings.js" defer></script>
+  </head>
+
+  <body>
+    <div class="app">
+      <header>
+        <div class="logo">MAX</div>
+        <p class="tag">Your personal movie concierge.</p>
+      </header>
+
+      <main>
+        <nav class="top" aria-label="MAX navigation">
+          <a class="link back-link" href="./index.html">‹ Home</a>
+        </nav>
+
+        <section aria-labelledby="settings-title">
+          <h1 id="settings-title">TMDB Settings</h1>
+          <p class="small">
+            Your prototype token stays in this browser's local storage.
+          </p>
+
+          <form id="settings-form">
+            <label class="visually-hidden" for="token">TMDB Read Access Token</label>
+            <input
+              class="input"
+              id="token"
+              type="password"
+              autocomplete="off"
+              placeholder="TMDB Read Access Token"
+            >
+            <button class="primary" id="save" type="submit">Save &amp; Test TMDB</button>
+          </form>
+
+          <div id="msg" class="status" aria-live="polite"></div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
