@@ -1,1 +1,47 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MAX Search</title><style>body{margin:0;background:#07080b;color:#f7f7f8;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.app{max-width:430px;min-height:100vh;margin:auto;padding:20px 18px}.logo{text-align:center;font-weight:900;letter-spacing:8px;font-size:22px}.tag{text-align:center;color:#9da1aa;font-size:12px}.top{display:flex;justify-content:space-between;align-items:center;margin:20px 0}.back{color:#9da1aa;text-decoration:none}.input{width:100%;padding:14px;border-radius:14px;border:1px solid #2a2d35;background:#101217;color:white;font-size:16px;box-sizing:border-box}.button{display:block;width:100%;padding:14px;margin:7px 0;border-radius:14px;border:1px solid #2a2d35;background:#15171c;color:white;text-decoration:none;font-weight:650;box-sizing:border-box}.primary{background:#f5f5f7;color:#08090b}.status{padding:12px;border-radius:12px;border:1px solid #2a2d35;background:#101217;color:#9da1aa}.results{margin-top:16px}</style></head><body><div class="app"><div class="logo">MAX</div><div class="tag">Your personal movie concierge.</div><div class="top"><a class="back" href="./index.html?v=081">‹ Home</a><span>SEARCH</span></div><form id="f"><input class="input" id="q" name="q" enterkeyhint="search" autocomplete="off" placeholder="Movie, show, genre, actor, director..."><button class="button primary" type="submit">Search MAX</button></form><div id="results" class="results"></div></div><script>(function(){const API='https://api.themoviedb.org/3',token=()=>localStorage.getItem('maxTmdbToken')||'';const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));async function api(path){const r=await fetch(API+path,{headers:{Authorization:'Bearer '+token()}});if(!r.ok)throw Error('TMDB returned '+r.status);return r.json()}async function run(){const q=document.getElementById('q').value.trim(),out=document.getElementById('results');if(!q)return;if(!token()){out.innerHTML='<div class="status">Connect TMDB in MAX Settings first.</div>';return}out.innerHTML='<div class="status">MAX is searching…</div>';try{let d=await api('/search/multi?query='+encodeURIComponent(q)+'&include_adult=false&language=en-US&page=1'),items=(d.results||[]).filter(x=>x.media_type==='movie'||x.media_type==='tv').slice(0,10);out.innerHTML=items.length?items.map(x=>'<a class="button" href="./detail.html?id='+x.id+'&type='+x.media_type+'">'+esc(x.title||x.name)+' <span style="color:#9da1aa">· '+(x.media_type==='tv'?'TV':'Movie')+'</span></a>').join(''):'<div class="status">MAX couldn’t find that.</div>'}catch(e){out.innerHTML='<div class="status">'+esc(e.message)+'</div>'}}document.getElementById('f').onsubmit=e=>{e.preventDefault();run()};const p=new URLSearchParams(location.search),q=p.get('q');if(q){document.getElementById('q').value=q;run()}})();</script></body></html>
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#07080b">
+    <title>MAX Search</title>
+    <link rel="stylesheet" href="./assets/max.css">
+    <script src="./assets/search.js" defer></script>
+  </head>
+
+  <body>
+    <div class="app">
+      <header>
+        <div class="logo">MAX</div>
+        <p class="tag">Your personal movie concierge.</p>
+      </header>
+
+      <main>
+        <nav class="top" aria-label="MAX navigation">
+          <a class="link back-link" href="./index.html">‹ Home</a>
+          <span aria-hidden="true">SEARCH</span>
+        </nav>
+
+        <section aria-labelledby="search-title">
+          <h1 id="search-title">Search MAX</h1>
+
+          <form id="search-form">
+            <label class="visually-hidden" for="q">Search for a movie, show, genre, actor, or director</label>
+            <input
+              class="input"
+              id="q"
+              name="q"
+              type="search"
+              enterkeyhint="search"
+              autocomplete="off"
+              placeholder="Movie, show, genre, actor, director..."
+            >
+            <button class="button primary" type="submit">Search MAX</button>
+          </form>
+
+          <div id="results" class="results" aria-live="polite"></div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
