@@ -1,1 +1,38 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07080b"><title>MAX — Add a Service</title><style>body{margin:0;background:#07080b;color:#f7f7f8;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.app{max-width:430px;min-height:100vh;margin:auto;padding:20px 18px;background:radial-gradient(circle at 50% -10%,#292e39,#050609 65%)}.logo{text-align:center;font-weight:900;letter-spacing:8px;font-size:22px}.tag{text-align:center;color:#9da1aa;font-size:12px}.top{margin:20px 0}.link,button{display:block;width:100%;padding:16px;margin:6px 0;border-radius:16px;border:1px solid #2a2d35;background:#15171c;color:#fff;font-size:16px;font-weight:650;text-decoration:none;text-align:center;box-sizing:border-box;cursor:pointer}.primary{background:#f5f5f7;color:#08090b}.q{font-size:29px;font-weight:800;line-height:1.1;margin:24px 0 10px}.muted{color:#9da1aa;font-size:13px;line-height:1.45}.selected{background:#f5f5f7;color:#08090b}.small{color:#666a73;font-size:10px;text-align:center;margin-top:22px}</style></head><body><div class="app"><div class="logo">MAX</div><div class="tag">Your personal movie concierge.</div><div class="top"><a class="link" href="./index.html">‹ Home</a></div><div class="q">Open up MAX's search</div><p class="muted">You’ve gone through a few strong matches on your current services. Add one more service and MAX will widen the pool while keeping your current preferences.</p><div id="choices"></div><div class="small">Your existing services stay selected.</div></div><script>(function(){const services=[['Netflix','8'],['Prime Video','9'],['Hulu','15'],['Disney+','337'],['Max','1899'],['Paramount+','531'],['Peacock','386'],['Apple TV+','350']];const root=document.getElementById('choices');const p=(()=>{try{return JSON.parse(localStorage.getItem('maxLastPreferences')||'null')}catch(_){return null}})();if(!p){root.innerHTML='<a class="link primary" href="./pick.html">Start MAX Pick</a>';return}const current=new Set(p.services||[]);services.filter(([_,id])=>!current.has(id)).forEach(([name,id])=>{const b=document.createElement('button');b.textContent='Add '+name;b.onclick=()=>{const next=[...(p.services||[]),id];p.services=next;localStorage.setItem('maxLastPreferences',JSON.stringify(p));localStorage.setItem('maxNoWatchStreak','0');location.href='./repeat.html?v='+Date.now()+'&serviceAdded=1'};root.appendChild(b)});const keep=document.createElement('a');keep.className='link';keep.href='./repeat.html?v='+Date.now()+'&keepServices=1';keep.textContent='Keep current services';root.appendChild(keep)})();</script></body></html>
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#07080b">
+    <title>MAX — Add a Service</title>
+    <link rel="stylesheet" href="./assets/max.css">
+    <script src="./assets/services.js" defer></script>
+  </head>
+
+  <body>
+    <div class="app">
+      <header>
+        <div class="logo">MAX</div>
+        <p class="tag">Your personal movie concierge.</p>
+      </header>
+
+      <main>
+        <nav class="top" aria-label="MAX navigation">
+          <a class="link back-link" href="./index.html">‹ Home</a>
+        </nav>
+
+        <section aria-labelledby="services-title">
+          <h1 id="services-title" class="q">Open up MAX's search</h1>
+          <p class="muted">
+            You’ve gone through a few strong matches on your current services.
+            Add one more service and MAX will widen the pool while keeping your current preferences.
+          </p>
+
+          <div id="choices"></div>
+
+          <p class="small">Your existing services stay selected.</p>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
