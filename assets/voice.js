@@ -471,12 +471,48 @@
     currentRecognition.lang = "en-US";
     currentRecognition.interimResults = false;
     currentRecognition.continuous = false;
+    currentRecognition.maxAlternatives = 1;
     mic.classList.add("listening");
     status.textContent = "I’m listening…";
+
+    currentRecognition.onstart = () => {
+      status.textContent = "MAX is listening for speech…";
+      console.info("[MAX voice] recognition start");
+    };
+
+    currentRecognition.onaudiostart = () => {
+      status.textContent = "MAX is receiving microphone audio…";
+      console.info("[MAX voice] audio start");
+    };
+
+    currentRecognition.onsoundstart = () => {
+      status.textContent = "MAX heard sound…";
+      console.info("[MAX voice] sound start");
+    };
+
+    currentRecognition.onspeechstart = () => {
+      status.textContent = "MAX detected speech…";
+      console.info("[MAX voice] speech start");
+    };
+
+    currentRecognition.onspeechend = () => {
+      status.textContent = "MAX finished listening for speech…";
+      console.info("[MAX voice] speech end");
+    };
+
+    currentRecognition.onaudioend = () => {
+      console.info("[MAX voice] audio end");
+    };
+
+    currentRecognition.onsoundend = () => {
+      console.info("[MAX voice] sound end");
+    };
 
     currentRecognition.onresult = (event) => {
       const text = event.results?.[0]?.[0]?.transcript || "";
       stop();
+
+      console.info("[MAX voice] result", text);
 
       if (!text.trim()) {
         status.textContent = "MAX couldn’t hear that. Tap the microphone and try again.";
@@ -497,12 +533,20 @@
       recommend(preferences).catch(showError);
     };
 
-    currentRecognition.onerror = () => {
+    currentRecognition.onnomatch = () => {
+      console.info("[MAX voice] no match");
       stop();
-      status.textContent = "MAX couldn’t hear that. Tap the microphone and try again.";
+      status.textContent = "MAX heard you, but couldn’t recognize the words.";
+    };
+
+    currentRecognition.onerror = (event) => {
+      console.error("[MAX voice] error", event.error, event.message || "");
+      stop();
+      status.textContent = `MAX voice error: ${event.error || "unknown"}. Tap the microphone and try again.`;
     };
 
     currentRecognition.onend = () => {
+      console.info("[MAX voice] recognition end");
       if (recognition === currentRecognition) {
         recognition = null;
         mic.classList.remove("listening");
