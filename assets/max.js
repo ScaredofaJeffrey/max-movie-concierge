@@ -31,15 +31,15 @@
     if (!items.length) return;
 
     container.innerHTML = `
-      <section class="saved-box" aria-labelledby="saved-title">
-        <h2 id="saved-title" class="saved-title">
+      <section class="savedBox" aria-labelledby="saved-title">
+        <h2 id="saved-title" class="savedTitle">
           🕐 Maybe Later
-          <span class="saved-reason">· ${items.length} saved</span>
+          <span class="savedReason">· ${items.length} saved</span>
         </h2>
 
         ${items.slice(0, 3).map((item) => `
           <a
-            class="saved-row"
+            class="savedRow"
             href="./detail.html?id=${encodeURIComponent(item.id)}&type=${encodeURIComponent(item.type || "movie")}"
           >
             ${item.poster_path ? `
@@ -50,16 +50,16 @@
               >
             ` : ""}
             <span>
-              <span class="saved-title">${escapeHtml(item.title || "Untitled")}</span>
-              <span class="saved-reason">
+              <span class="savedTitle">${escapeHtml(item.title || "Untitled")}</span>
+              <span class="savedReason">
                 ${item.reason === "not-today" ? "🌙 Not today" : "🕐 Maybe another time"}
               </span>
             </span>
           </a>
         `).join("")}
 
-        <a class="saved-row" href="./saved.html">
-          <span class="saved-title">View all saved →</span>
+        <a class="savedRow" href="./saved.html">
+          <span class="savedTitle">View all saved →</span>
         </a>
       </section>
     `;
