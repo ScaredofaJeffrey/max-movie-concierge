@@ -116,10 +116,10 @@
         activeRecognition.onresult = null;
         activeRecognition.onerror = null;
         activeRecognition.onend = null;
-        activeRecognition.abort();
+        activeRecognition.stop();
       } catch {
         try {
-          activeRecognition.stop();
+          activeRecognition.abort();
         } catch {
           // Recognition is already stopped.
         }
@@ -478,11 +478,6 @@
       const text = event.results?.[0]?.[0]?.transcript || "";
       stop();
 
-      if (!text.trim()) {
-        status.textContent = "MAX couldn’t hear that. Tap the microphone and try again.";
-        return;
-      }
-
       const preferences = parse(text);
       const message = summary(preferences);
       lastReply = message;
@@ -524,9 +519,7 @@
     }
 
     primeAudio();
-    setTimeout(() => {
-      if (!recognition) startRecognition();
-    }, 120);
+    setTimeout(startRecognition, 120);
   }
 
   auto.onclick = () => {
@@ -540,15 +533,7 @@
     refreshToggle();
   };
 
-  mic.onclick = () => {
-    if (recognition) {
-      stop();
-      status.textContent = "MAX stopped listening.";
-      return;
-    }
-
-    start();
-  };
+  mic.onclick = start;
   refreshToggle();
 
   window.addEventListener("pagehide", stop);
