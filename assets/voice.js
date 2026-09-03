@@ -478,6 +478,11 @@
       const text = event.results?.[0]?.[0]?.transcript || "";
       stop();
 
+      if (!text.trim()) {
+        status.textContent = "MAX couldn’t hear that. Tap the microphone and try again.";
+        return;
+      }
+
       const preferences = parse(text);
       const message = summary(preferences);
       lastReply = message;
@@ -519,7 +524,9 @@
     }
 
     primeAudio();
-    setTimeout(startRecognition, 120);
+    setTimeout(() => {
+      if (!recognition) startRecognition();
+    }, 120);
   }
 
   auto.onclick = () => {
