@@ -22,9 +22,10 @@
         </nav>
 
         <section aria-labelledby="settings-title">
-          <h1 id="settings-title">TMDB Settings</h1>
+          <h1 id="settings-title">MAX Settings</h1>
+
           <p class="small">
-            Your prototype token stays in this browser's local storage.
+            Your prototype TMDB token stays in this browser's local storage.
           </p>
 
           <form id="settings-form">
@@ -36,8 +37,23 @@
               autocomplete="off"
               placeholder="TMDB Read Access Token"
             >
-            <button class="primary" id="save" type="submit">Save &amp; Test TMDB</button>
+
+            <label class="visually-hidden" for="transcribe-url">MAX voice transcription endpoint</label>
+            <input
+              class="input"
+              id="transcribe-url"
+              type="url"
+              inputmode="url"
+              autocomplete="off"
+              placeholder="Voice transcription endpoint (optional)"
+            >
+
+            <button class="primary" id="save" type="submit">Save Settings</button>
           </form>
+
+          <p class="small">
+            The voice endpoint should be a secure server-side transcription service. Do not put an OpenAI API key in this page.
+          </p>
 
           <div id="msg" class="status" aria-live="polite"></div>
         </section>
