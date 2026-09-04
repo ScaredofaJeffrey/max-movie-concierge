@@ -34,6 +34,7 @@
       this.analyser = null;
       this.raf = null;
       this.speechDetected = false;
+      this.startedAt = 0;
     }
 
     async start() {
@@ -56,6 +57,7 @@
       try {
         this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         this.running = true;
+        this.startedAt = Date.now();
         this.chunks = [];
         this.speechDetected = false;
         this.recorder = new MediaRecorder(this.stream);
@@ -129,8 +131,9 @@
 
           const rms = Math.sqrt(sum / data.length);
           const speaking = rms > 0.018;
+          const warmedUp = Date.now() - this.startedAt >= 600;
 
-          if (speaking) {
+          if (speaking && warmedUp) {
             silentSince = 0;
             if (!this.speechDetected) {
               this.speechDetected = true;
@@ -239,6 +242,7 @@
       this.recorder = null;
       this.chunks = [];
       this.speechDetected = false;
+      this.startedAt = 0;
     }
   }
 
