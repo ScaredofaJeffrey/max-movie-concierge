@@ -4,7 +4,7 @@
   const API_BASE = "https://api.themoviedb.org/3";
   const TOKEN_KEY = "maxTmdbToken";
   const TRANSCRIBE_KEY = "maxTranscribeUrl";
-  const DEFAULT_TRANSCRIBE_URL = "https://max-voice-transcription-inb26uz6u-m5vdfmywmv-4350.vercel.app/api/transcribe";
+  const DEFAULT_TRANSCRIBE_URL = "https://max-voice-transcription-6zzubs0mh-m5vdfmywmv-4350.vercel.app/api/transcribe";
   const form = document.getElementById("settings-form");
   const input = document.getElementById("token");
   const transcribeInput = document.getElementById("transcribe-url");
