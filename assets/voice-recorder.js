@@ -3,7 +3,7 @@
 
   const nativeRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const isOpera = /OPR\//i.test(navigator.userAgent);
-  const DEFAULT_TRANSCRIBE_URL = "https://max-voice-transcription-6zzubs0mh-m5vdfmywmv-4350.vercel.app/api/transcribe";
+  const DEFAULT_TRANSCRIBE_URL = "https://max-voice-transcription-m5vdfmywmv-4350.vercel.app/api/transcribe";
 
   // Keep native recognition everywhere it is actually supported.
   if (nativeRecognition && !isOpera) return;
