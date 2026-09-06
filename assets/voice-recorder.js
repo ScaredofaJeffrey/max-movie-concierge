@@ -3,6 +3,7 @@
 
   const nativeRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const isOpera = /OPR\//i.test(navigator.userAgent);
+  const DEFAULT_TRANSCRIBE_URL = "https://max-voice-transcription-6zzubs0mh-m5vdfmywmv-4350.vercel.app/api/transcribe";
 
   // Keep native recognition everywhere it is actually supported.
   if (nativeRecognition && !isOpera) return;
@@ -42,15 +43,10 @@
         throw new DOMException("Recognition has already started.", "InvalidStateError");
       }
 
-      const endpoint = localStorage.getItem("maxTranscribeUrl") || "";
+      const endpoint = localStorage.getItem("maxTranscribeUrl") || DEFAULT_TRANSCRIBE_URL;
 
       if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
         this.fail("not-supported", "MAX voice recording is not available in this browser.");
-        return;
-      }
-
-      if (!endpoint) {
-        this.fail("service-not-configured", "MAX voice transcription is not connected yet. Add the transcription endpoint in MAX Settings.");
         return;
       }
 
@@ -100,7 +96,7 @@
       if (this.recorder && this.recorder.state !== "inactive") {
         this.recorder.stop();
       } else {
-        this.finish(localStorage.getItem("maxTranscribeUrl") || "");
+        this.finish(localStorage.getItem("maxTranscribeUrl") || DEFAULT_TRANSCRIBE_URL);
       }
     }
 
