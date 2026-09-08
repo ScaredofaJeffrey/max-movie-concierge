@@ -5,7 +5,6 @@
   const isOpera = /OPR\//i.test(navigator.userAgent);
   const DEFAULT_TRANSCRIBE_URL = "https://max-voice-transcription-m5vdfmywmv-4350.vercel.app/api/transcribe";
 
-  // Keep native recognition everywhere it is actually supported.
   if (nativeRecognition && !isOpera) return;
 
   class MaxVoiceRecorder {
@@ -182,12 +181,13 @@
       }
 
       try {
+        // FormData avoids the custom Content-Type header that forces a CORS preflight.
+        const form = new FormData();
+        form.append("file", blob, "max-voice.webm");
+
         const response = await fetch(endpoint, {
           method: "POST",
-          body: blob,
-          headers: {
-            "Content-Type": blob.type || "audio/webm"
-          }
+          body: form
         });
 
         const body = await response.text();
@@ -230,10 +230,7 @@
           ? "transcription-service"
           : "network";
 
-        this.onerror?.({
-          error: errorCode,
-          message
-        });
+        this.onerror?.({ error: errorCode, message });
       }
     }
 
