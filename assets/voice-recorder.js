@@ -190,11 +190,30 @@
           }
         });
 
+        const body = await response.text();
+
         if (!response.ok) {
-          throw new Error(`Transcription service returned ${response.status}`);
+          let detail = body.trim();
+
+          try {
+            const parsed = JSON.parse(body);
+            detail = parsed.error?.message || parsed.error || parsed.message || detail;
+          } catch {
+            // Keep the plain-text response when it is not JSON.
+          }
+
+          throw new Error(
+            `Transcription service returned ${response.status}${detail ? `: ${detail}` : "."}`
+          );
         }
 
-        const data = await response.json();
+        let data;
+        try {
+          data = JSON.parse(body);
+        } catch {
+          throw new Error("Transcription service returned an invalid response.");
+        }
+
         const text = String(data.text || "").trim();
 
         if (!text) {
@@ -206,9 +225,14 @@
           results: [[{ transcript: text }]]
         });
       } catch (error) {
+        const message = error?.message || "MAX could not transcribe that request.";
+        const errorCode = /^Transcription service returned \d+/.test(message)
+          ? "transcription-service"
+          : "network";
+
         this.onerror?.({
-          error: "network",
-          message: error?.message || "MAX could not transcribe that request."
+          error: errorCode,
+          message
         });
       }
     }
