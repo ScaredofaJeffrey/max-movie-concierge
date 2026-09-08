@@ -1,12 +1,26 @@
 export default async function handler(request) {
   const cors = {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type"
   };
 
   if (request.method === "OPTIONS") {
     return new Response(null, { headers: cors });
+  }
+
+  if (request.method === "GET") {
+    return new Response(JSON.stringify({
+      ok: true,
+      service: "MAX voice transcription",
+      configured: Boolean(process.env.OPENAI_API_KEY)
+    }), {
+      status: 200,
+      headers: {
+        ...cors,
+        "Content-Type": "application/json"
+      }
+    });
   }
 
   if (request.method !== "POST") {
