@@ -1,9 +1,15 @@
+export const config = {
+  maxDuration: 30
+};
+
 export default async function handler(request) {
   const cors = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type"
   };
+
+  console.info("[MAX transcribe] request", request.method);
 
   if (request.method === "OPTIONS") {
     return new Response(null, { headers: cors });
@@ -31,6 +37,7 @@ export default async function handler(request) {
   }
 
   if (!process.env.OPENAI_API_KEY) {
+    console.error("[MAX transcribe] missing OPENAI_API_KEY");
     return new Response("Transcription service is not configured.", {
       status: 500,
       headers: cors
@@ -38,15 +45,19 @@ export default async function handler(request) {
   }
 
   try {
+    console.info("[MAX transcribe] reading multipart audio");
     const incoming = await request.formData();
     const audio = incoming.get("file");
 
     if (!(audio instanceof Blob) || !audio.size) {
+      console.error("[MAX transcribe] no audio received");
       return new Response("No audio received.", {
         status: 400,
         headers: cors
       });
     }
+
+    console.info("[MAX transcribe] audio received", audio.size, audio.type || "unknown");
 
     const form = new FormData();
     form.append(
@@ -58,13 +69,25 @@ export default async function handler(request) {
     form.append("language", "en");
     form.append("response_format", "json");
 
-    const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
-      },
-      body: form
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20000);
+
+    let response;
+
+    try {
+      console.info("[MAX transcribe] sending audio to OpenAI");
+      response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+        },
+        body: form,
+        signal: controller.signal
+      });
+      console.info("[MAX transcribe] OpenAI responded", response.status);
+    } finally {
+      clearTimeout(timeout);
+    }
 
     const body = await response.text();
 
@@ -76,6 +99,15 @@ export default async function handler(request) {
       }
     });
   } catch (error) {
+    if (error?.name === "AbortError") {
+      console.error("[MAX transcribe] OpenAI request timed out");
+      return new Response("Transcription provider timed out.", {
+        status: 504,
+        headers: cors
+      });
+    }
+
+    console.error("[MAX transcribe] failure", error?.message || error);
     return new Response(error?.message || "Transcription service failed.", {
       status: 500,
       headers: cors
